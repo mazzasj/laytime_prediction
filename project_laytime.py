@@ -15,7 +15,10 @@ doughsage = []
 with open('dough_times.csv', 'r', encoding='utf-8-sig') as csvfile:
     reader = csv.reader(csvfile)
     for row in reader:
-        timestamp = datetime.strptime(row[0], '%m/%d/%y %H:%M') #lowercase 'y' for 2 digit year
+        try:
+            timestamp = datetime.strptime(row[0], '%m/%d/%y %H:%M') #2 digit year
+        except ValueError:
+            timestamp = datetime.strptime(row[0], '%m/%d/%Y %H:%M') #4 digit year
         age = (current_time - timestamp).total_seconds() / 3600
         # Consider all data entries in the csv as relevant (please filter ranges in the CSV file itself)
         doughsage.append(age)
