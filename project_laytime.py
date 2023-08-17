@@ -10,7 +10,7 @@ current_time = datetime(2023, 8, 16, 21, 5) # datetime.now() yyyy:mm:dd hh:mm
 # %%
 
 # Read the times from the CSV file https://carypi.us.kellogg.com/PIVision/#/Displays/324/Mixer-Complete
-doughsage = []
+doughsage = [] # current age of each dough in hours
 
 with open('dough_times.csv', 'r', encoding='utf-8-sig') as csvfile:
     reader = csv.reader(csvfile)
@@ -28,23 +28,17 @@ print(f"Current laytime is {LT} hours")
 
 
 # %%
-print(f"{len(doughsage)} tubs") # number of tubs
+print(f"{len(doughsage)} tubs") # number of tubs in the CSV file
 
 # %%
-mins_tub = 60 / RATE # minutes per tub
-
 # Compute dump time of each tub based on consumption rate
-laytime_predictions = []
-laytime = []
-LT_calc = []
-LT_time = []
+mins_tub = 60 / RATE # minutes per tub
+LT_calc = [] # lay time calculation
+LT_time = [] # predicted consumption time
 for i in range(len(doughsage)):
     tub_time = current_time + (timedelta(minutes = mins_tub) * i) # time when it will dump
-
     dump_time = tub_time - current_time # in how many minutes it will dump
-    laytime.append(dump_time.total_seconds() + (doughsage[i]* 60 * 60)) # divide by 60 seconds twice to get laytime
-    laytime_predictions.append(laytime[i] / 60 / 60)
-    LT_calc.append(round(laytime_predictions.pop(0),2))
+    LT_calc.append((dump_time.total_seconds() + (doughsage[i]* 60 * 60)) / 60 / 60) # divide by 60 seconds twice to get laytime
     LT_time.append(timedelta(minutes=mins_tub * i) + current_time)
     #if LT_calc[-1] < 23 or LT_calc[-1] > 27:
         #print(LT_calc[-1],LT_time[-1])
